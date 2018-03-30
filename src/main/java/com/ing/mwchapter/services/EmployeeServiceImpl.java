@@ -6,10 +6,10 @@ import com.ing.mwchapter.domain.Seniority;
 import com.ing.mwchapter.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class EmployeeServiceImpl implements IEmployeeService {
@@ -23,43 +23,46 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public List<String> getListOfEmployeeNames() {
-        //TODO: Implement me
-        return null;
+
+        return repository.getAllEmployees().stream().map(employee -> employee.getName()).collect(Collectors.toList());
     }
 
     @Override
     public List<String> getListOfEmployeeFullNames() {
-        //TODO: Implement me
-        return null;
+        return repository
+                .getAllEmployees()
+                .stream()
+                .map(employee -> String.format("%s %s", employee.getName(), employee.getSurname()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Employee> getEmployeesWithSeniority(Seniority seniority) {
-        //TODO: Implement me
-        return null;
+
+        return repository.getAllEmployees().stream().filter(employee -> employee.getSeniority().equals(seniority)).collect(Collectors.toList());
     }
 
     @Override
     public Map<Gender, List<Employee>> getEmployeesByGender() {
-        //TODO: Implement me
-        return null;
+        return repository.getAllEmployees().stream().collect(Collectors.groupingBy(Employee::getGender));
     }
 
     @Override
     public Double getAverageSalary() {
-        //TODO: Implement me
-        return null;
+        return repository.getAllEmployees().stream().mapToDouble(e -> e.getSalary()).average().getAsDouble();
     }
 
     @Override
     public Map<Seniority, Double> getAverageSalaryBySeniority() {
-        //TODO: Implement me
-        return null;
+        return repository
+                .getAllEmployees()
+                .stream()
+                .collect(Collectors.groupingBy(Employee::getSeniority, Collectors.averagingDouble(Employee::getSalary)));
     }
 
     @Override
     public Optional<Employee> getEmployee(String name, String surname) {
-        //TODO: Implement me
-        return null;
+
+        return repository.getAllEmployees().stream().filter(employee -> employee.getName().equals(name) && employee.getSurname().equals(surname)).findFirst();
     }
 }
