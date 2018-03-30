@@ -65,4 +65,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
         return repository.getAllEmployees().stream().filter(employee -> employee.getName().equals(name) && employee.getSurname().equals(surname)).findFirst();
     }
+
+    @Override
+    public Set<String> getSkills() {
+        return repository.getAllEmployees().stream().flatMap(e -> e.getSkills().stream()).distinct().collect(Collectors.toSet());
+    }
 }
